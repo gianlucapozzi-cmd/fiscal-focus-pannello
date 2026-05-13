@@ -155,7 +155,7 @@ export async function GET(req: NextRequest) {
     try {
       const historicalInsights = await fetchMeta(`${ACCOUNT_ID}/insights`, {
         fields: "spend,impressions,clicks,actions",
-        date_preset: "last_30_days",
+        date_preset: datePreset,
         time_increment: "1",
         filtering: JSON.stringify([
           {
