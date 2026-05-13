@@ -35,3 +35,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Le chiavi API vanno solo in .env.local (non committato). Questo file non viene letto da Next.js.

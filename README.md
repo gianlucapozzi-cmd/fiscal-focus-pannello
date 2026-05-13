@@ -30,12 +30,14 @@ API_SECRET=qualsiasi_stringa_random_lunga
 NEXT_PUBLIC_API_SECRET=stessa_stringa_di_sopra
 ```
 
+**Importante:** Next.js legge solo `.env`, `.env.local`, ecc. **Non** mettere mai token o secret in `.gitignore` (è solo per Git: l’app non le carica). Dopo ogni modifica alle env, riavvia `npm run dev`. `API_SECRET` e `NEXT_PUBLIC_API_SECRET` devono essere identici, altrimenti vedrai `401 Unauthorized` sulle chiamate a `/api/meta`.
+
 ### 3. Ottieni il Long-Lived Token Meta
 
 Il token che usi in n8n scade ogni 60 giorni. Puoi rinnovarlo con:
 
 ```
-https://graph.facebook.com/v19.0/oauth/access_token
+https://graph.facebook.com/v22.0/oauth/access_token
   ?grant_type=fb_exchange_token
   &client_id={APP_ID}
   &client_secret={APP_SECRET}

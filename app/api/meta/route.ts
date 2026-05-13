@@ -23,7 +23,7 @@ const objectiveMap: Record<string, string> = {
 };
 
 async function fetchMeta(path: string, params: Record<string, string> = {}) {
-  const url = new URL(`https://graph.facebook.com/v19.0/${path}`);
+  const url = new URL(`https://graph.facebook.com/v22.0/${path}`);
   url.searchParams.set("access_token", TOKEN);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
   const res = await fetch(url.toString(), { next: { revalidate: 300 } }); // cache 5 min
@@ -34,7 +34,7 @@ async function fetchMeta(path: string, params: Record<string, string> = {}) {
 export async function GET(req: NextRequest) {
   // Protezione base con secret header
   const secret = req.headers.get("x-api-secret");
-  if (API_SECRET && secret !== API_SECRET) {
+  if (API_SECRET && API_SECRET.length > 0 && secret !== API_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -71,14 +71,16 @@ export async function GET(req: NextRequest) {
     // 3. Fetch insights per ogni campagna
     const insightRequests = campaigns.map(async (campaign: Campaign) => {
       try {
-        const timeRange = since && until
-          ? { time_range: JSON.stringify({ since, until }) }
-          : { date_preset: datePreset };
-
-        const insights = await fetchMeta(`${campaign.id}/insights`, {
+        const insightParams: Record<string, string> = {
           fields: "impressions,clicks,spend,actions,ctr,cpc,reach,frequency",
-          ...timeRange,
-        });
+        };
+        if (since && until) {
+          insightParams.time_range = JSON.stringify({ since, until });
+        } else {
+          insightParams.date_preset = datePreset;
+        }
+
+        const insights = await fetchMeta(`${campaign.id}/insights`, insightParams);
 
         const data = insights.data?.[0] || {};
         const leads = data.actions?.find(
