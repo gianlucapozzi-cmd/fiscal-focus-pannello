@@ -66,3 +66,42 @@ body::before {
   .font-display { font-family: var(--font-display); }
   .font-mono { font-family: var(--font-body); }
 }
+
+/* Tooltip spiegazioni metriche (MetricHint) */
+.metric-hint-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+}
+
+.metric-hint-bubble {
+  display: none;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(100% + 8px);
+  min-width: 200px;
+  max-width: min(320px, 85vw);
+  padding: 10px 12px;
+  background: var(--bg-card-hover);
+  border: 1px solid var(--border-accent);
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: normal;
+  text-align: left;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  z-index: 200;
+  pointer-events: none;
+}
+
+.metric-hint-wrap:hover .metric-hint-bubble,
+.metric-hint-wrap:focus-visible .metric-hint-bubble {
+  display: block;
+}

@@ -2,9 +2,11 @@
 
 import { DailyData } from "@/lib/types";
 import { formatCurrency, formatShortDate } from "@/lib/utils";
+import { METRIC_HELP } from "@/lib/metricHelp";
+import { MetricHint } from "@/components/MetricHint";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, BarChart, Bar, Legend
+  Tooltip, ResponsiveContainer, BarChart, Bar
 } from "recharts";
 import { useState } from "react";
 
@@ -14,11 +16,17 @@ interface SpendChartProps {
 
 type ChartMetric = "spend" | "impressions" | "clicks" | "leads";
 
-const METRICS: { key: ChartMetric; label: string; color: string; format: (v: number) => string }[] = [
-  { key: "spend", label: "Spesa (€)", color: "#6366f1", format: (v) => formatCurrency(v) },
-  { key: "impressions", label: "Impression", color: "#22c55e", format: (v) => v.toLocaleString("it-IT") },
-  { key: "clicks", label: "Click", color: "#f59e0b", format: (v) => v.toLocaleString("it-IT") },
-  { key: "leads", label: "Lead", color: "#ec4899", format: (v) => String(v) },
+const METRICS: {
+  key: ChartMetric;
+  label: string;
+  color: string;
+  help: string;
+  format: (v: number) => string;
+}[] = [
+  { key: "spend", label: "Spesa (€)", color: "#6366f1", help: METRIC_HELP.chart_spend, format: (v) => formatCurrency(v) },
+  { key: "impressions", label: "Impression", color: "#22c55e", help: METRIC_HELP.chart_impressions, format: (v) => v.toLocaleString("it-IT") },
+  { key: "clicks", label: "Click", color: "#f59e0b", help: METRIC_HELP.chart_clicks, format: (v) => v.toLocaleString("it-IT") },
+  { key: "leads", label: "Lead", color: "#ec4899", help: METRIC_HELP.chart_leads, format: (v) => String(v) },
 ];
 
 export function SpendChart({ data }: SpendChartProps) {
@@ -60,10 +68,24 @@ export function SpendChart({ data }: SpendChartProps) {
       borderRadius: "12px",
       padding: "24px",
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", flexWrap: "wrap", gap: "12px" }}>
-        <h3 style={{ fontFamily: "var(--font-display)", fontSize: "16px", fontWeight: 600, color: "var(--text-primary)" }}>
-          Andamento nel tempo
-        </h3>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px", flexWrap: "wrap", gap: "12px" }}>
+        <div style={{ flex: "1 1 200px", minWidth: 0 }}>
+          <h3 style={{ fontFamily: "var(--font-display)", fontSize: "16px", fontWeight: 600, color: "var(--text-primary)" }}>
+            Andamento nel tempo
+          </h3>
+          <p
+            style={{
+              fontSize: "11px",
+              color: "var(--text-muted)",
+              fontFamily: "var(--font-body)",
+              marginTop: "8px",
+              lineHeight: 1.5,
+              maxWidth: "520px",
+            }}
+          >
+            {metric.help}
+          </p>
+        </div>
 
         <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
           {/* Metric selector */}
@@ -73,7 +95,7 @@ export function SpendChart({ data }: SpendChartProps) {
                 key={m.key}
                 onClick={() => setActiveMetric(m.key)}
                 style={{
-                  padding: "5px 12px",
+                  padding: "5px 10px",
                   borderRadius: "5px",
                   border: "none",
                   cursor: "pointer",
@@ -82,9 +104,21 @@ export function SpendChart({ data }: SpendChartProps) {
                   background: activeMetric === m.key ? m.color : "transparent",
                   color: activeMetric === m.key ? "#fff" : "var(--text-muted)",
                   transition: "all 0.15s",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "4px",
                 }}
               >
                 {m.label}
+                <span
+                  onClick={(e) => e.stopPropagation()}
+                  style={{ display: "inline-flex", opacity: activeMetric === m.key ? 0.95 : 1 }}
+                >
+                  <MetricHint
+                    text={m.help}
+                    iconColor={activeMetric === m.key ? "rgba(255,255,255,0.92)" : undefined}
+                  />
+                </span>
               </button>
             ))}
           </div>

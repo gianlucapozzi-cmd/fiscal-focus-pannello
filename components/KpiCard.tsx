@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import { MetricHint } from "@/components/MetricHint";
 
 interface KpiCardProps {
   label: string;
@@ -9,9 +10,11 @@ interface KpiCardProps {
   icon: ReactNode;
   accentColor?: string;
   trend?: { value: number; label: string };
+  /** Testo lungo: spiegazione della metrica (tooltip). */
+  help?: string;
 }
 
-export function KpiCard({ label, value, sub, icon, accentColor = "var(--accent)", trend }: KpiCardProps) {
+export function KpiCard({ label, value, sub, icon, accentColor = "var(--accent)", trend, help }: KpiCardProps) {
   return (
     <div
       className="kpi-card"
@@ -21,7 +24,7 @@ export function KpiCard({ label, value, sub, icon, accentColor = "var(--accent)"
         borderRadius: "12px",
         padding: "24px",
         position: "relative",
-        overflow: "hidden",
+        overflow: "visible",
         transition: "border-color 0.2s, background 0.2s",
       }}
       onMouseEnter={(e) => {
@@ -47,10 +50,13 @@ export function KpiCard({ label, value, sub, icon, accentColor = "var(--accent)"
       }} />
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
-        <span style={{ color: "var(--text-secondary)", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "var(--font-body)" }}>
-          {label}
-        </span>
-        <span style={{ color: accentColor, opacity: 0.8 }}>{icon}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap", paddingRight: "8px" }}>
+          <span style={{ color: "var(--text-secondary)", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase", fontFamily: "var(--font-body)" }}>
+            {label}
+          </span>
+          {help ? <MetricHint text={help} /> : null}
+        </div>
+        <span style={{ color: accentColor, opacity: 0.8, flexShrink: 0 }}>{icon}</span>
       </div>
 
       <div style={{ fontFamily: "var(--font-display)", fontSize: "28px", fontWeight: 700, color: "var(--text-primary)", letterSpacing: "-0.02em", marginBottom: "4px" }}>

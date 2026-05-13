@@ -22,6 +22,17 @@ const objectiveMap: Record<string, string> = {
   MESSAGES: "Messaggi",
 };
 
+/** Preset usati in UI → enum accettato da Meta su /insights (vedi Marketing API). */
+function toMetaDatePreset(preset: string): string {
+  const map: Record<string, string> = {
+    last_7_days: "last_7d",
+    last_14_days: "last_14d",
+    last_30_days: "last_30d",
+    last_90_days: "last_90d",
+  };
+  return map[preset] ?? preset;
+}
+
 async function fetchMeta(path: string, params: Record<string, string> = {}) {
   const url = new URL(`https://graph.facebook.com/v22.0/${path}`);
   url.searchParams.set("access_token", TOKEN);
@@ -40,6 +51,7 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const datePreset = searchParams.get("date_preset") || "this_month";
+  const metaDatePreset = toMetaDatePreset(datePreset);
   // oppure range custom
   const since = searchParams.get("since"); // YYYY-MM-DD
   const until = searchParams.get("until"); // YYYY-MM-DD
@@ -77,7 +89,7 @@ export async function GET(req: NextRequest) {
         if (since && until) {
           insightParams.time_range = JSON.stringify({ since, until });
         } else {
-          insightParams.date_preset = datePreset;
+          insightParams.date_preset = metaDatePreset;
         }
 
         const insights = await fetchMeta(`${campaign.id}/insights`, insightParams);
@@ -155,7 +167,7 @@ export async function GET(req: NextRequest) {
     try {
       const historicalInsights = await fetchMeta(`${ACCOUNT_ID}/insights`, {
         fields: "spend,impressions,clicks,actions",
-        date_preset: datePreset,
+        date_preset: metaDatePreset,
         time_increment: "1",
         filtering: JSON.stringify([
           {

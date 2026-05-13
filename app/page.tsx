@@ -7,6 +7,7 @@ import { KpiCard } from "@/components/KpiCard";
 import { DateFilter } from "@/components/DateFilter";
 import { CampaignTable } from "@/components/CampaignTable";
 import { SpendChart } from "@/components/SpendChart";
+import { METRIC_HELP } from "@/lib/metricHelp";
 import {
   TrendingUp, MousePointer, Eye, Users,
   RefreshCw, Zap, DollarSign, Target
@@ -129,6 +130,18 @@ export default function Dashboard() {
         {/* Date filter */}
         <div style={{ marginBottom: "28px" }}>
           <DateFilter selected={datePreset} onChange={setDatePreset} />
+          <p
+            style={{
+              marginTop: "10px",
+              fontSize: "11px",
+              color: "var(--text-muted)",
+              fontFamily: "var(--font-body)",
+              lineHeight: 1.45,
+              maxWidth: "640px",
+            }}
+          >
+            Tutte le metriche (KPI, tabella e grafico) si riferiscono al periodo selezionato sopra, come restituito da Meta Ads.
+          </p>
         </div>
 
         {/* Error */}
@@ -176,18 +189,21 @@ export default function Dashboard() {
                 value={formatCurrency(data.summary.spend)}
                 icon={<DollarSign size={18} />}
                 accentColor="var(--accent)"
+                help={METRIC_HELP.spend_total}
               />
               <KpiCard
                 label="Impression"
                 value={formatNumber(data.summary.impressions)}
                 icon={<Eye size={18} />}
                 accentColor="var(--green)"
+                help={METRIC_HELP.impressions}
               />
               <KpiCard
                 label="Click"
                 value={formatNumber(data.summary.clicks)}
                 icon={<MousePointer size={18} />}
                 accentColor="var(--yellow)"
+                help={METRIC_HELP.clicks}
               />
               <KpiCard
                 label="CTR medio"
@@ -195,6 +211,7 @@ export default function Dashboard() {
                 sub={data.summary.ctr > 1 ? "Ottimo" : data.summary.ctr > 0.5 ? "Nella media" : "Da migliorare"}
                 icon={<TrendingUp size={18} />}
                 accentColor={data.summary.ctr > 1 ? "var(--green)" : "var(--yellow)"}
+                help={METRIC_HELP.ctr}
               />
               <KpiCard
                 label="Lead"
@@ -202,6 +219,7 @@ export default function Dashboard() {
                 sub={data.summary.cpl ? `CPL: ${formatCurrency(data.summary.cpl)}` : undefined}
                 icon={<Target size={18} />}
                 accentColor="#ec4899"
+                help={METRIC_HELP.leads}
               />
               <KpiCard
                 label="Campagne attive"
@@ -209,6 +227,7 @@ export default function Dashboard() {
                 sub={`${data.campaigns.length} campagne totali`}
                 icon={<Users size={18} />}
                 accentColor="var(--accent)"
+                help={METRIC_HELP.active_campaigns}
               />
             </div>
 
@@ -226,7 +245,7 @@ export default function Dashboard() {
                 fontSize: "15px",
                 fontWeight: 600,
                 color: "var(--text-primary)",
-                marginBottom: "16px",
+                marginBottom: "6px",
                 letterSpacing: "-0.01em",
               }}>
                 Dettaglio campagne
@@ -234,6 +253,18 @@ export default function Dashboard() {
                   · {data.campaigns.length} campagne "{data.filteredBy}"
                 </span>
               </h2>
+              <p
+                style={{
+                  fontSize: "11px",
+                  color: "var(--text-muted)",
+                  fontFamily: "var(--font-body)",
+                  marginBottom: "16px",
+                  lineHeight: 1.45,
+                  maxWidth: "720px",
+                }}
+              >
+                Ogni riga è una campagna Meta il cui nome contiene il filtro configurato. Passa il mouse sull’icona accanto all’intestazione di colonna per la definizione della metrica.
+              </p>
               <CampaignTable campaigns={data.campaigns} />
             </div>
           </>

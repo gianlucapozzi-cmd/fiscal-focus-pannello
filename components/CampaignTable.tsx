@@ -1,8 +1,10 @@
 "use client";
 
 import { CampaignInsight } from "@/lib/types";
-import { formatCurrency, formatNumber, formatPercent, formatDate, statusLabel } from "@/lib/utils";
+import { formatCurrency, formatNumber, formatPercent, formatDate } from "@/lib/utils";
 import { useState } from "react";
+import { MetricHint } from "@/components/MetricHint";
+import { METRIC_HELP } from "@/lib/metricHelp";
 
 interface CampaignTableProps {
   campaigns: CampaignInsight[];
@@ -54,6 +56,61 @@ export function CampaignTable({ campaigns }: CampaignTableProps) {
     borderBottom: "1px solid var(--border)",
   });
 
+  const SortTh = ({
+    label,
+    columnKey,
+    help,
+    alignRight,
+  }: {
+    label: string;
+    columnKey: SortKey;
+    help: string;
+    alignRight?: boolean;
+  }) => (
+    <th
+      style={{
+        ...colStyle(columnKey),
+        ...(alignRight ? { textAlign: "right" as const } : {}),
+      }}
+      onClick={() => handleSort(columnKey)}
+    >
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: alignRight ? "flex-end" : "flex-start",
+          gap: "6px",
+          width: "100%",
+        }}
+      >
+        <span>
+          {label}
+          {sortKey === columnKey ? (sortDir === "asc" ? " ↑" : " ↓") : ""}
+        </span>
+        <span onClick={(e) => e.stopPropagation()}>
+          <MetricHint text={help} />
+        </span>
+      </div>
+    </th>
+  );
+
+  const StaticTh = ({
+    label,
+    help,
+    columnKey,
+  }: {
+    label: string;
+    help: string;
+    columnKey: SortKey;
+  }) => (
+    <th style={{ ...colStyle(columnKey), cursor: "default" }}>
+      <div style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
+        <span>{label}</span>
+        <MetricHint text={help} />
+      </div>
+    </th>
+  );
+
   return (
     <div>
       {/* Status filter tabs */}
@@ -95,34 +152,16 @@ export function CampaignTable({ campaigns }: CampaignTableProps) {
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "900px" }}>
             <thead>
               <tr>
-                <th style={colStyle("campaign_name")} onClick={() => handleSort("campaign_name")}>
-                  Campagna {sortKey === "campaign_name" ? (sortDir === "asc" ? "↑" : "↓") : ""}
-                </th>
-                <th style={colStyle("status")} onClick={() => handleSort("status")}>
-                  Stato
-                </th>
-                <th style={colStyle("objective")} onClick={() => handleSort("objective")}>
-                  Obiettivo
-                </th>
-                <th style={{ ...colStyle("spend"), textAlign: "right" }} onClick={() => handleSort("spend")}>
-                  Spesa {sortKey === "spend" ? (sortDir === "asc" ? "↑" : "↓") : ""}
-                </th>
-                <th style={{ ...colStyle("impressions"), textAlign: "right" }} onClick={() => handleSort("impressions")}>
-                  Impression {sortKey === "impressions" ? (sortDir === "asc" ? "↑" : "↓") : ""}
-                </th>
-                <th style={{ ...colStyle("clicks"), textAlign: "right" }} onClick={() => handleSort("clicks")}>
-                  Click {sortKey === "clicks" ? (sortDir === "asc" ? "↑" : "↓") : ""}
-                </th>
-                <th style={{ ...colStyle("ctr"), textAlign: "right" }} onClick={() => handleSort("ctr")}>
-                  CTR {sortKey === "ctr" ? (sortDir === "asc" ? "↑" : "↓") : ""}
-                </th>
-                <th style={{ ...colStyle("leads"), textAlign: "right" }} onClick={() => handleSort("leads")}>
-                  Lead {sortKey === "leads" ? (sortDir === "asc" ? "↑" : "↓") : ""}
-                </th>
-                <th style={{ ...colStyle("cpl"), textAlign: "right" }} onClick={() => handleSort("cpl")}>
-                  CPL {sortKey === "cpl" ? (sortDir === "asc" ? "↑" : "↓") : ""}
-                </th>
-                <th style={colStyle("stop_time")}>Scadenza</th>
+                <SortTh label="Campagna" columnKey="campaign_name" help={METRIC_HELP.campaign_name} />
+                <SortTh label="Stato" columnKey="status" help={METRIC_HELP.status} />
+                <SortTh label="Obiettivo" columnKey="objective" help={METRIC_HELP.objective} />
+                <SortTh label="Spesa" columnKey="spend" help={METRIC_HELP.spend} alignRight />
+                <SortTh label="Impression" columnKey="impressions" help={METRIC_HELP.impressions} alignRight />
+                <SortTh label="Click" columnKey="clicks" help={METRIC_HELP.clicks} alignRight />
+                <SortTh label="CTR" columnKey="ctr" help={METRIC_HELP.ctr} alignRight />
+                <SortTh label="Lead" columnKey="leads" help={METRIC_HELP.leads} alignRight />
+                <SortTh label="CPL" columnKey="cpl" help={METRIC_HELP.cpl} alignRight />
+                <StaticTh label="Scadenza" columnKey="stop_time" help={METRIC_HELP.stop_time} />
               </tr>
             </thead>
             <tbody>
