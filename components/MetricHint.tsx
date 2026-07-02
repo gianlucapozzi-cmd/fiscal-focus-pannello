@@ -23,7 +23,7 @@ export function MetricHint({ text, iconColor }: MetricHintProps) {
         size={13}
         strokeWidth={2}
         style={{
-          color: iconColor ?? "var(--text-muted)",
+          color: iconColor ?? "var(--text-secondary)",
           cursor: "help",
           flexShrink: 0,
           opacity: 0.85,

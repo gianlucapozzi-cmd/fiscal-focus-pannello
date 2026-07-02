@@ -25,15 +25,18 @@ export function KpiCard({ label, value, sub, icon, accentColor = "var(--accent)"
         padding: "24px",
         position: "relative",
         overflow: "visible",
-        transition: "border-color 0.2s, background 0.2s",
+        transition: "border-color 0.2s, background 0.2s, box-shadow 0.2s",
+        boxShadow: "0 6px 16px rgba(15, 23, 42, 0.06)",
       }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLDivElement).style.background = "var(--bg-card-hover)";
-        (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(99,102,241,0.3)";
+        (e.currentTarget as HTMLDivElement).style.borderColor = "var(--border-accent)";
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 10px 24px rgba(79, 70, 229, 0.14)";
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLDivElement).style.background = "var(--bg-card)";
         (e.currentTarget as HTMLDivElement).style.borderColor = "var(--border)";
+        (e.currentTarget as HTMLDivElement).style.boxShadow = "0 6px 16px rgba(15, 23, 42, 0.06)";
       }}
     >
       {/* Glow dot */}

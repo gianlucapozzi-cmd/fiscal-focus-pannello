@@ -49,7 +49,7 @@ export function CampaignTable({ campaigns }: CampaignTableProps) {
     fontSize: "10px",
     letterSpacing: "0.1em",
     textTransform: "uppercase" as const,
-    color: sortKey === key ? "var(--accent)" : "var(--text-muted)",
+    color: sortKey === key ? "var(--accent)" : "var(--text-secondary)",
     fontFamily: "var(--font-body)",
     whiteSpace: "nowrap" as const,
     userSelect: "none" as const,
@@ -125,7 +125,7 @@ export function CampaignTable({ campaigns }: CampaignTableProps) {
               border: "1px solid",
               borderColor: statusFilter === s ? "var(--accent)" : "var(--border)",
               background: statusFilter === s ? "var(--accent-soft)" : "transparent",
-              color: statusFilter === s ? "var(--accent)" : "var(--text-secondary)",
+              color: statusFilter === s ? "var(--accent)" : "var(--text-primary)",
               fontSize: "12px",
               fontFamily: "var(--font-body)",
               cursor: "pointer",
@@ -147,6 +147,7 @@ export function CampaignTable({ campaigns }: CampaignTableProps) {
         border: "1px solid var(--border)",
         borderRadius: "12px",
         overflow: "hidden",
+        boxShadow: "0 6px 16px rgba(15, 23, 42, 0.06)",
       }}>
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "900px" }}>
@@ -178,10 +179,10 @@ export function CampaignTable({ campaigns }: CampaignTableProps) {
                   style={{
                     borderTop: "1px solid var(--border)",
                     transition: "background 0.15s",
-                    background: "transparent",
+                    background: i % 2 === 0 ? "transparent" : "rgba(79, 70, 229, 0.02)",
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "var(--bg-card-hover)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = i % 2 === 0 ? "transparent" : "rgba(79, 70, 229, 0.02)")}
                 >
                   <td style={{ padding: "14px 16px", maxWidth: "240px" }}>
                     <div style={{ fontSize: "13px", color: "var(--text-primary)", fontFamily: "var(--font-body)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>

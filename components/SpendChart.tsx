@@ -67,6 +67,7 @@ export function SpendChart({ data }: SpendChartProps) {
       border: "1px solid var(--border)",
       borderRadius: "12px",
       padding: "24px",
+      boxShadow: "0 6px 16px rgba(15, 23, 42, 0.06)",
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px", flexWrap: "wrap", gap: "12px" }}>
         <div style={{ flex: "1 1 200px", minWidth: 0 }}>
@@ -76,7 +77,7 @@ export function SpendChart({ data }: SpendChartProps) {
           <p
             style={{
               fontSize: "11px",
-              color: "var(--text-muted)",
+              color: "var(--text-secondary)",
               fontFamily: "var(--font-body)",
               marginTop: "8px",
               lineHeight: 1.5,
@@ -102,7 +103,7 @@ export function SpendChart({ data }: SpendChartProps) {
                   fontSize: "11px",
                   fontFamily: "var(--font-body)",
                   background: activeMetric === m.key ? m.color : "transparent",
-                  color: activeMetric === m.key ? "#fff" : "var(--text-muted)",
+                  color: activeMetric === m.key ? "#fff" : "var(--text-primary)",
                   transition: "all 0.15s",
                   display: "inline-flex",
                   alignItems: "center",
@@ -137,7 +138,7 @@ export function SpendChart({ data }: SpendChartProps) {
                   fontSize: "11px",
                   fontFamily: "var(--font-body)",
                   background: chartType === t ? "var(--border-accent)" : "transparent",
-                  color: chartType === t ? "var(--accent)" : "var(--text-muted)",
+                  color: chartType === t ? "var(--accent)" : "var(--text-primary)",
                 }}
               >
                 {t === "area" ? "Area" : "Barre"}

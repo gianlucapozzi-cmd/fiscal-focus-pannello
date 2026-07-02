@@ -50,7 +50,7 @@ export default function Dashboard() {
   const activeCampaigns = data?.campaigns.filter((c) => c.status === "ACTIVE").length ?? 0;
 
   return (
-    <div style={{ minHeight: "100vh", background: "var(--bg-primary)", padding: "0 0 60px" }}>
+    <div style={{ minHeight: "100vh", background: "var(--bg-primary)", padding: "0 0 60px", color: "var(--text-primary)" }}>
 
       {/* Header */}
       <header style={{
@@ -61,8 +61,9 @@ export default function Dashboard() {
         justifyContent: "space-between",
         position: "sticky",
         top: 0,
-        background: "rgba(10,10,15,0.85)",
+        background: "rgba(246, 248, 252, 0.9)",
         backdropFilter: "blur(20px)",
+        boxShadow: "0 6px 18px rgba(15, 23, 42, 0.06)",
         zIndex: 100,
         gap: "16px",
         flexWrap: "wrap",
@@ -87,7 +88,7 @@ export default function Dashboard() {
             }}>
               Meta Ads
             </h1>
-            <div style={{ fontSize: "11px", color: "var(--text-muted)", fontFamily: "var(--font-body)", marginTop: "2px" }}>
+            <div style={{ fontSize: "12px", color: "var(--text-muted)", fontFamily: "var(--font-body)", marginTop: "2px" }}>
               {data ? (
                 <>
                   Campagne "{data.filteredBy}" · {data.campaigns.length} su {data.totalCampaigns} totali
@@ -99,7 +100,7 @@ export default function Dashboard() {
 
         <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
           {lastRefresh && (
-            <span style={{ fontSize: "11px", color: "var(--text-muted)", fontFamily: "var(--font-body)" }}>
+            <span style={{ fontSize: "12px", color: "var(--text-muted)", fontFamily: "var(--font-body)" }}>
               Aggiornato {lastRefresh.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" })}
             </span>
           )}
@@ -111,7 +112,7 @@ export default function Dashboard() {
               borderRadius: "8px",
               border: "1px solid var(--border)",
               background: "var(--bg-card)",
-              color: "var(--text-secondary)",
+              color: "var(--text-primary)",
               cursor: loading ? "not-allowed" : "pointer",
               display: "flex", alignItems: "center", gap: "6px",
               fontSize: "12px", fontFamily: "var(--font-body)",
@@ -133,7 +134,7 @@ export default function Dashboard() {
           <p
             style={{
               marginTop: "10px",
-              fontSize: "11px",
+              fontSize: "12px",
               color: "var(--text-muted)",
               fontFamily: "var(--font-body)",
               lineHeight: 1.45,
@@ -255,7 +256,7 @@ export default function Dashboard() {
               </h2>
               <p
                 style={{
-                  fontSize: "11px",
+                  fontSize: "12px",
                   color: "var(--text-muted)",
                   fontFamily: "var(--font-body)",
                   marginBottom: "16px",
