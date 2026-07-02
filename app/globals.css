@@ -97,8 +97,19 @@ body::before {
   white-space: normal;
   text-align: left;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
-  z-index: 200;
+  z-index: 500;
   pointer-events: none;
+}
+
+.metric-hint-bubble--top {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+
+.metric-hint-bubble--right {
+  left: auto;
+  right: 0;
+  transform: none;
 }
 
 .metric-hint-wrap:hover .metric-hint-bubble,

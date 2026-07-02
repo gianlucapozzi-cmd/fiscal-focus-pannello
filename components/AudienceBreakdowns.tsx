@@ -31,7 +31,7 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "16px", marginBottom: "28px" }}>
-      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden", boxShadow: "0 6px 16px rgba(15, 23, 42, 0.06)" }}>
+      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "visible", boxShadow: "0 6px 16px rgba(15, 23, 42, 0.06)" }}>
         <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--border)" }}>
           <h3 style={{ fontFamily: "var(--font-display)", fontSize: "14px", color: "var(--text-primary)", marginBottom: "4px" }}>
             Regione
@@ -49,7 +49,7 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
                 <th style={{ ...cellStyle("right"), borderTop: "none", color: "var(--text-primary)" }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
                     Lead
-                    <MetricHint text={METRIC_HELP.leads} />
+                    <MetricHint text={METRIC_HELP.leads} placement="top" align="right" />
                   </span>
                 </th>
               </tr>
@@ -94,7 +94,7 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
         )}
       </div>
 
-      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden", boxShadow: "0 6px 16px rgba(15, 23, 42, 0.06)" }}>
+      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "visible", boxShadow: "0 6px 16px rgba(15, 23, 42, 0.06)" }}>
         <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--border)" }}>
           <h3 style={{ fontFamily: "var(--font-display)", fontSize: "14px", color: "var(--text-primary)", marginBottom: "4px" }}>
             Eta / Genere
@@ -112,13 +112,13 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
                 <th style={{ ...cellStyle("right"), borderTop: "none", color: "var(--text-primary)" }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
                     CTR
-                    <MetricHint text={METRIC_HELP.ctr} />
+                    <MetricHint text={METRIC_HELP.ctr} placement="top" align="right" />
                   </span>
                 </th>
                 <th style={{ ...cellStyle("right"), borderTop: "none", color: "var(--text-primary)" }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
                     CPL
-                    <MetricHint text={METRIC_HELP.cpl} />
+                    <MetricHint text={METRIC_HELP.cpl} placement="top" align="right" />
                   </span>
                 </th>
               </tr>

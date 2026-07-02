@@ -18,7 +18,7 @@ export default function Dashboard() {
   const [data, setData] = useState<MetaApiResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [datePreset, setDatePreset] = useState<DatePreset>("this_month");
+  const [datePreset, setDatePreset] = useState<DatePreset>("last_30_days");
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
 
   const fetchData = useCallback(async (preset: DatePreset) => {

@@ -6,14 +6,28 @@ interface MetricHintProps {
   text: string;
   /** Colore icona (default: testo secondario). Utile su sfondi colorati. */
   iconColor?: string;
+  /** Posizionamento tooltip rispetto all'icona. */
+  placement?: "top" | "bottom";
+  /** Allineamento orizzontale tooltip. */
+  align?: "center" | "right";
 }
 
 /** Icona con tooltip: passa il mouse (o focus da tastiera) per leggere la spiegazione della metrica. */
-export function MetricHint({ text, iconColor }: MetricHintProps) {
+export function MetricHint({
+  text,
+  iconColor,
+  placement = "bottom",
+  align = "center",
+}: MetricHintProps) {
+  const bubbleClass = [
+    "metric-hint-bubble",
+    placement === "top" ? "metric-hint-bubble--top" : "",
+    align === "right" ? "metric-hint-bubble--right" : "",
+  ].filter(Boolean).join(" ");
+
   return (
     <span
       className="metric-hint-wrap"
-      title={text}
       tabIndex={0}
       aria-label={`Informazioni: ${text}`}
       onClick={(e) => e.stopPropagation()}
@@ -30,7 +44,7 @@ export function MetricHint({ text, iconColor }: MetricHintProps) {
         }}
         aria-hidden
       />
-      <span className="metric-hint-bubble" role="tooltip">
+      <span className={bubbleClass} role="tooltip">
         {text}
       </span>
     </span>

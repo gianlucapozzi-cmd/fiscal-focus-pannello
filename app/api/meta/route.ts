@@ -83,7 +83,7 @@ export async function GET(req: NextRequest) {
   }
 
   const { searchParams } = new URL(req.url);
-  const datePreset = searchParams.get("date_preset") || "this_month";
+  const datePreset = searchParams.get("date_preset") || "last_30_days";
   const metaDatePreset = toMetaDatePreset(datePreset);
   // oppure range custom
   const since = searchParams.get("since"); // YYYY-MM-DD
