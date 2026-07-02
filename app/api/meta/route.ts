@@ -59,13 +59,12 @@ function buildInsightsFilter(keyword: string): string {
   ]);
 }
 
-function mapGeoInsights(rows: RawGeoInsight[], fallbackCity = "N/D"): GeoInsight[] {
+function mapGeoInsights(rows: RawGeoInsight[]): GeoInsight[] {
   return rows.map((item: RawGeoInsight) => {
     const spend = parseFloat(item.spend || "0");
     const leads = parseLeads(item.actions);
     return {
       region: item.region || "N/D",
-      city: item.city || fallbackCity,
       spend,
       impressions: parseInt(item.impressions || "0"),
       clicks: parseInt(item.clicks || "0"),
@@ -219,31 +218,19 @@ export async function GET(req: NextRequest) {
       // Fallback silenzioso se il filtering non funziona
     }
 
-    // 6. Breakdown geografico (regione/citta) per insight account
+    // 6. Breakdown geografico (solo regione) per insight account
     let geoBreakdown: GeoInsight[] = [];
     try {
       const geoInsights = await fetchMeta(`${ACCOUNT_ID}/insights`, {
         fields: "spend,impressions,clicks,ctr,actions",
         date_preset: metaDatePreset,
-        breakdowns: "region,city",
+        breakdowns: "region",
         filtering: buildInsightsFilter(FILTER_KEYWORD),
         limit: "200",
       });
       geoBreakdown = mapGeoInsights(geoInsights.data || []);
     } catch {
-      // Fallback: alcuni account rifiutano "region,city". In quel caso usiamo solo region.
-      try {
-        const geoInsightsFallback = await fetchMeta(`${ACCOUNT_ID}/insights`, {
-          fields: "spend,impressions,clicks,ctr,actions",
-          date_preset: metaDatePreset,
-          breakdowns: "region",
-          filtering: buildInsightsFilter(FILTER_KEYWORD),
-          limit: "200",
-        });
-        geoBreakdown = mapGeoInsights(geoInsightsFallback.data || [], "—");
-      } catch {
-        // Fallback silenzioso: endpoint può fallire su alcuni account/permessi.
-      }
+      // Fallback silenzioso: endpoint può fallire su alcuni account/permessi.
     }
     geoBreakdown = geoBreakdown
       .sort((a: GeoInsight, b: GeoInsight) => b.spend - a.spend)
@@ -332,7 +319,6 @@ interface RawDailyInsight {
 
 interface GeoInsight {
   region: string;
-  city: string;
   spend: number;
   impressions: number;
   clicks: number;
@@ -354,7 +340,6 @@ interface DemographicInsight {
 
 interface RawGeoInsight {
   region?: string;
-  city?: string;
   spend?: string;
   impressions?: string;
   clicks?: string;

@@ -34,18 +34,17 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
       <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden", boxShadow: "0 6px 16px rgba(15, 23, 42, 0.06)" }}>
         <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--border)" }}>
           <h3 style={{ fontFamily: "var(--font-display)", fontSize: "14px", color: "var(--text-primary)", marginBottom: "4px" }}>
-            Regione / Citta
+            Regione
           </h3>
           <p style={{ fontSize: "11px", color: "var(--text-muted)", fontFamily: "var(--font-body)" }}>
-            Top localita per spesa nel periodo selezionato.
+            Top regioni per spesa nel periodo selezionato.
           </p>
         </div>
         <div style={{ overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "420px" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "360px" }}>
             <thead>
               <tr>
                 <th style={{ ...cellStyle("left"), borderTop: "none", color: "var(--text-primary)" }}>Regione</th>
-                <th style={{ ...cellStyle("left"), borderTop: "none", color: "var(--text-primary)" }}>Citta</th>
                 <th style={{ ...cellStyle("right"), borderTop: "none", color: "var(--text-primary)" }}>Spesa</th>
                 <th style={{ ...cellStyle("right"), borderTop: "none", color: "var(--text-primary)" }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
@@ -58,15 +57,14 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
             <tbody>
               {geoData.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ ...cellStyle("left"), color: "var(--text-muted)", textAlign: "center", padding: "18px" }}>
+                  <td colSpan={3} style={{ ...cellStyle("left"), color: "var(--text-muted)", textAlign: "center", padding: "18px" }}>
                     Breakdown geografico non disponibile.
                   </td>
                 </tr>
               ) : (
                 visibleGeo.map((row, idx) => (
-                  <tr key={`${row.region}-${row.city}-${idx}`} style={{ background: idx % 2 ? "rgba(79, 70, 229, 0.02)" : "transparent" }}>
+                  <tr key={`${row.region}-${idx}`} style={{ background: idx % 2 ? "rgba(79, 70, 229, 0.02)" : "transparent" }}>
                     <td style={cellStyle("left")}>{row.region}</td>
-                    <td style={cellStyle("left")}>{row.city}</td>
                     <td style={cellStyle("right")}>{formatCurrency(row.spend)}</td>
                     <td style={cellStyle("right")}>{formatNumber(row.leads)}</td>
                   </tr>

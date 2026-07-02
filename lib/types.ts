@@ -39,7 +39,6 @@ export interface Summary {
 
 export interface GeoBreakdownItem {
   region: string;
-  city: string;
   spend: number;
   impressions: number;
   clicks: number;
