@@ -49,6 +49,33 @@ function parseLeads(actions?: Action[]): number {
   return parseInt(raw);
 }
 
+function buildInsightsFilter(keyword: string): string {
+  return JSON.stringify([
+    {
+      field: "campaign.name",
+      operator: "CONTAIN",
+      value: keyword,
+    },
+  ]);
+}
+
+function mapGeoInsights(rows: RawGeoInsight[], fallbackCity = "N/D"): GeoInsight[] {
+  return rows.map((item: RawGeoInsight) => {
+    const spend = parseFloat(item.spend || "0");
+    const leads = parseLeads(item.actions);
+    return {
+      region: item.region || "N/D",
+      city: item.city || fallbackCity,
+      spend,
+      impressions: parseInt(item.impressions || "0"),
+      clicks: parseInt(item.clicks || "0"),
+      leads,
+      ctr: parseFloat(item.ctr || "0"),
+      cpl: leads > 0 ? spend / leads : null,
+    };
+  });
+}
+
 export async function GET(req: NextRequest) {
   // Protezione base con secret header
   const secret = req.headers.get("x-api-secret");
@@ -179,13 +206,7 @@ export async function GET(req: NextRequest) {
         fields: "spend,impressions,clicks,actions",
         date_preset: metaDatePreset,
         time_increment: "1",
-        filtering: JSON.stringify([
-          {
-            field: "campaign.name",
-            operator: "CONTAIN",
-            value: FILTER_KEYWORD,
-          },
-        ]),
+        filtering: buildInsightsFilter(FILTER_KEYWORD),
       });
       dailyData = (historicalInsights.data || []).map((d: RawDailyInsight) => ({
         date: d.date_start,
@@ -205,32 +226,28 @@ export async function GET(req: NextRequest) {
         fields: "spend,impressions,clicks,ctr,actions",
         date_preset: metaDatePreset,
         breakdowns: "region,city",
-        filtering: JSON.stringify([
-          {
-            field: "campaign.name",
-            operator: "CONTAIN",
-            value: FILTER_KEYWORD,
-          },
-        ]),
+        filtering: buildInsightsFilter(FILTER_KEYWORD),
         limit: "200",
       });
-      geoBreakdown = (geoInsights.data || []).map((item: RawGeoInsight) => {
-        const spend = parseFloat(item.spend || "0");
-        const leads = parseLeads(item.actions);
-        return {
-          region: item.region || "N/D",
-          city: item.city || "N/D",
-          spend,
-          impressions: parseInt(item.impressions || "0"),
-          clicks: parseInt(item.clicks || "0"),
-          leads,
-          ctr: parseFloat(item.ctr || "0"),
-          cpl: leads > 0 ? spend / leads : null,
-        };
-      }).sort((a: GeoInsight, b: GeoInsight) => b.spend - a.spend).slice(0, 30);
+      geoBreakdown = mapGeoInsights(geoInsights.data || []);
     } catch {
-      // Fallback silenzioso: endpoint può fallire su alcuni account/permessi.
+      // Fallback: alcuni account rifiutano "region,city". In quel caso usiamo solo region.
+      try {
+        const geoInsightsFallback = await fetchMeta(`${ACCOUNT_ID}/insights`, {
+          fields: "spend,impressions,clicks,ctr,actions",
+          date_preset: metaDatePreset,
+          breakdowns: "region",
+          filtering: buildInsightsFilter(FILTER_KEYWORD),
+          limit: "200",
+        });
+        geoBreakdown = mapGeoInsights(geoInsightsFallback.data || [], "—");
+      } catch {
+        // Fallback silenzioso: endpoint può fallire su alcuni account/permessi.
+      }
     }
+    geoBreakdown = geoBreakdown
+      .sort((a: GeoInsight, b: GeoInsight) => b.spend - a.spend)
+      .slice(0, 30);
 
     // 7. Breakdown demografico (eta/genere) per insight account
     let demographicBreakdown: DemographicInsight[] = [];
@@ -239,13 +256,7 @@ export async function GET(req: NextRequest) {
         fields: "spend,impressions,clicks,ctr,actions",
         date_preset: metaDatePreset,
         breakdowns: "age,gender",
-        filtering: JSON.stringify([
-          {
-            field: "campaign.name",
-            operator: "CONTAIN",
-            value: FILTER_KEYWORD,
-          },
-        ]),
+        filtering: buildInsightsFilter(FILTER_KEYWORD),
         limit: "200",
       });
       demographicBreakdown = (demographicInsights.data || []).map((item: RawDemographicInsight) => {
