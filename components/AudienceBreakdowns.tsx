@@ -31,7 +31,7 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
 
   return (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "16px", marginBottom: "28px" }}>
-      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "visible", boxShadow: "0 6px 16px rgba(15, 23, 42, 0.06)" }}>
+      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden", boxShadow: "0 6px 16px rgba(15, 23, 42, 0.06)" }}>
         <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--border)" }}>
           <h3 style={{ fontFamily: "var(--font-display)", fontSize: "14px", color: "var(--text-primary)", marginBottom: "4px" }}>
             Regione
@@ -40,7 +40,7 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
             Top regioni per spesa nel periodo selezionato.
           </p>
         </div>
-        <div style={{ overflowX: "auto", overflowY: "visible", position: "relative", zIndex: 2 }}>
+        <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "360px" }}>
             <thead>
               <tr>
@@ -49,7 +49,7 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
                 <th style={{ ...cellStyle("right"), borderTop: "none", color: "var(--text-primary)" }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
                     Lead
-                    <MetricHint text={METRIC_HELP.leads} placement="top" align="right" />
+                    <MetricHint text={METRIC_HELP.leads} />
                   </span>
                 </th>
               </tr>
@@ -94,7 +94,7 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
         )}
       </div>
 
-      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "visible", boxShadow: "0 6px 16px rgba(15, 23, 42, 0.06)" }}>
+      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden", boxShadow: "0 6px 16px rgba(15, 23, 42, 0.06)" }}>
         <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--border)" }}>
           <h3 style={{ fontFamily: "var(--font-display)", fontSize: "14px", color: "var(--text-primary)", marginBottom: "4px" }}>
             Eta / Genere
@@ -103,7 +103,7 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
             Distribuzione demografica delle performance.
           </p>
         </div>
-        <div style={{ overflowX: "auto", overflowY: "visible", position: "relative", zIndex: 2 }}>
+        <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "420px" }}>
             <thead>
               <tr>
@@ -112,13 +112,13 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
                 <th style={{ ...cellStyle("right"), borderTop: "none", color: "var(--text-primary)" }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
                     CTR
-                    <MetricHint text={METRIC_HELP.ctr} placement="top" align="right" />
+                    <MetricHint text={METRIC_HELP.ctr} />
                   </span>
                 </th>
                 <th style={{ ...cellStyle("right"), borderTop: "none", color: "var(--text-primary)" }}>
                   <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
                     CPL
-                    <MetricHint text={METRIC_HELP.cpl} placement="top" align="right" />
+                    <MetricHint text={METRIC_HELP.cpl} />
                   </span>
                 </th>
               </tr>
