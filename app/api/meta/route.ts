@@ -42,6 +42,13 @@ async function fetchMeta(path: string, params: Record<string, string> = {}) {
   return res.json();
 }
 
+function parseLeads(actions?: Action[]): number {
+  const raw = actions?.find(
+    (a: Action) => a.action_type === "lead" || a.action_type === "onsite_conversion.lead_grouped"
+  )?.value || "0";
+  return parseInt(raw);
+}
+
 export async function GET(req: NextRequest) {
   // Protezione base con secret header
   const secret = req.headers.get("x-api-secret");
@@ -75,8 +82,13 @@ export async function GET(req: NextRequest) {
         campaigns: [],
         insights: [],
         summary: { spend: 0, impressions: 0, clicks: 0, leads: 0, ctr: 0, cpc: 0 },
+        dailyData: [],
+        geoBreakdown: [],
+        demographicBreakdown: [],
         filteredBy: FILTER_KEYWORD,
         totalCampaigns: allCampaigns.length,
+        dateRange: since && until ? { since, until } : { preset: datePreset },
+        lastUpdated: new Date().toISOString(),
       });
     }
 
@@ -95,9 +107,7 @@ export async function GET(req: NextRequest) {
         const insights = await fetchMeta(`${campaign.id}/insights`, insightParams);
 
         const data = insights.data?.[0] || {};
-        const leads = data.actions?.find(
-          (a: Action) => a.action_type === "lead" || a.action_type === "onsite_conversion.lead_grouped"
-        )?.value || "0";
+        const leads = parseLeads(data.actions);
 
         return {
           campaign_id: campaign.id,
@@ -116,13 +126,13 @@ export async function GET(req: NextRequest) {
           spend: parseFloat(data.spend || "0"),
           impressions: parseInt(data.impressions || "0"),
           clicks: parseInt(data.clicks || "0"),
-          leads: parseInt(leads),
+          leads,
           ctr: parseFloat(data.ctr || "0"),
           cpc: parseFloat(data.cpc || "0"),
           reach: parseInt(data.reach || "0"),
           frequency: parseFloat(data.frequency || "0"),
-          cpl: parseFloat(leads) > 0
-            ? parseFloat(data.spend || "0") / parseFloat(leads)
+          cpl: leads > 0
+            ? parseFloat(data.spend || "0") / leads
             : null,
         };
       } catch {
@@ -182,20 +192,86 @@ export async function GET(req: NextRequest) {
         spend: parseFloat(d.spend || "0"),
         impressions: parseInt(d.impressions || "0"),
         clicks: parseInt(d.clicks || "0"),
-        leads: parseInt(
-          d.actions?.find(
-            (a: Action) => a.action_type === "lead" || a.action_type === "onsite_conversion.lead_grouped"
-          )?.value || "0"
-        ),
+        leads: parseLeads(d.actions),
       }));
     } catch {
       // Fallback silenzioso se il filtering non funziona
+    }
+
+    // 6. Breakdown geografico (regione/citta) per insight account
+    let geoBreakdown: GeoInsight[] = [];
+    try {
+      const geoInsights = await fetchMeta(`${ACCOUNT_ID}/insights`, {
+        fields: "spend,impressions,clicks,ctr,actions",
+        date_preset: metaDatePreset,
+        breakdowns: "region,city",
+        filtering: JSON.stringify([
+          {
+            field: "campaign.name",
+            operator: "CONTAIN",
+            value: FILTER_KEYWORD,
+          },
+        ]),
+        limit: "200",
+      });
+      geoBreakdown = (geoInsights.data || []).map((item: RawGeoInsight) => {
+        const spend = parseFloat(item.spend || "0");
+        const leads = parseLeads(item.actions);
+        return {
+          region: item.region || "N/D",
+          city: item.city || "N/D",
+          spend,
+          impressions: parseInt(item.impressions || "0"),
+          clicks: parseInt(item.clicks || "0"),
+          leads,
+          ctr: parseFloat(item.ctr || "0"),
+          cpl: leads > 0 ? spend / leads : null,
+        };
+      }).sort((a: GeoInsight, b: GeoInsight) => b.spend - a.spend).slice(0, 30);
+    } catch {
+      // Fallback silenzioso: endpoint può fallire su alcuni account/permessi.
+    }
+
+    // 7. Breakdown demografico (eta/genere) per insight account
+    let demographicBreakdown: DemographicInsight[] = [];
+    try {
+      const demographicInsights = await fetchMeta(`${ACCOUNT_ID}/insights`, {
+        fields: "spend,impressions,clicks,ctr,actions",
+        date_preset: metaDatePreset,
+        breakdowns: "age,gender",
+        filtering: JSON.stringify([
+          {
+            field: "campaign.name",
+            operator: "CONTAIN",
+            value: FILTER_KEYWORD,
+          },
+        ]),
+        limit: "200",
+      });
+      demographicBreakdown = (demographicInsights.data || []).map((item: RawDemographicInsight) => {
+        const spend = parseFloat(item.spend || "0");
+        const leads = parseLeads(item.actions);
+        return {
+          age: item.age || "N/D",
+          gender: item.gender || "N/D",
+          spend,
+          impressions: parseInt(item.impressions || "0"),
+          clicks: parseInt(item.clicks || "0"),
+          leads,
+          ctr: parseFloat(item.ctr || "0"),
+          cpl: leads > 0 ? spend / leads : null,
+        };
+      }).sort((a: DemographicInsight, b: DemographicInsight) => b.spend - a.spend);
+    } catch {
+      // Fallback silenzioso: endpoint può fallire su alcuni account/permessi.
     }
 
     return NextResponse.json({
       campaigns: insightsResults,
       summary: summaryWithRates,
       dailyData,
+      geoBreakdown,
+      demographicBreakdown,
       filteredBy: FILTER_KEYWORD,
       totalCampaigns: allCampaigns.length,
       dateRange: since && until ? { since, until } : { preset: datePreset },
@@ -240,5 +316,47 @@ interface RawDailyInsight {
   spend?: string;
   impressions?: string;
   clicks?: string;
+  actions?: Action[];
+}
+
+interface GeoInsight {
+  region: string;
+  city: string;
+  spend: number;
+  impressions: number;
+  clicks: number;
+  leads: number;
+  ctr: number;
+  cpl: number | null;
+}
+
+interface DemographicInsight {
+  age: string;
+  gender: string;
+  spend: number;
+  impressions: number;
+  clicks: number;
+  leads: number;
+  ctr: number;
+  cpl: number | null;
+}
+
+interface RawGeoInsight {
+  region?: string;
+  city?: string;
+  spend?: string;
+  impressions?: string;
+  clicks?: string;
+  ctr?: string;
+  actions?: Action[];
+}
+
+interface RawDemographicInsight {
+  age?: string;
+  gender?: string;
+  spend?: string;
+  impressions?: string;
+  clicks?: string;
+  ctr?: string;
   actions?: Action[];
 }

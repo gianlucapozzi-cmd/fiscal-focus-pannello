@@ -7,6 +7,7 @@ import { KpiCard } from "@/components/KpiCard";
 import { DateFilter } from "@/components/DateFilter";
 import { CampaignTable } from "@/components/CampaignTable";
 import { SpendChart } from "@/components/SpendChart";
+import { AudienceBreakdowns } from "@/components/AudienceBreakdowns";
 import { METRIC_HELP } from "@/lib/metricHelp";
 import {
   TrendingUp, MousePointer, Eye, Users,
@@ -238,6 +239,12 @@ export default function Dashboard() {
                 <SpendChart data={data.dailyData} />
               </div>
             )}
+
+            {/* Audience Breakdowns */}
+            <AudienceBreakdowns
+              geoData={data.geoBreakdown}
+              demographicData={data.demographicBreakdown}
+            />
 
             {/* Campaign Table */}
             <div>

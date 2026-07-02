@@ -37,10 +37,34 @@ export interface Summary {
   cpl: number | null;
 }
 
+export interface GeoBreakdownItem {
+  region: string;
+  city: string;
+  spend: number;
+  impressions: number;
+  clicks: number;
+  leads: number;
+  ctr: number;
+  cpl: number | null;
+}
+
+export interface DemographicBreakdownItem {
+  age: string;
+  gender: string;
+  spend: number;
+  impressions: number;
+  clicks: number;
+  leads: number;
+  ctr: number;
+  cpl: number | null;
+}
+
 export interface MetaApiResponse {
   campaigns: CampaignInsight[];
   summary: Summary;
   dailyData: DailyData[];
+  geoBreakdown: GeoBreakdownItem[];
+  demographicBreakdown: DemographicBreakdownItem[];
   filteredBy: string;
   totalCampaigns: number;
   dateRange: { since: string; until: string } | { preset: string };
