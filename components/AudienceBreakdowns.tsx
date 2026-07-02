@@ -40,7 +40,7 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
             Top regioni per spesa nel periodo selezionato.
           </p>
         </div>
-        <div style={{ overflowX: "auto" }}>
+        <div style={{ overflowX: "auto", overflowY: "visible", position: "relative", zIndex: 2 }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "360px" }}>
             <thead>
               <tr>
@@ -103,7 +103,7 @@ export function AudienceBreakdowns({ geoData, demographicData }: AudienceBreakdo
             Distribuzione demografica delle performance.
           </p>
         </div>
-        <div style={{ overflowX: "auto" }}>
+        <div style={{ overflowX: "auto", overflowY: "visible", position: "relative", zIndex: 2 }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "420px" }}>
             <thead>
               <tr>

@@ -73,6 +73,12 @@ body::before {
   display: inline-flex;
   align-items: center;
   vertical-align: middle;
+  z-index: 1;
+}
+
+.metric-hint-wrap:hover,
+.metric-hint-wrap:focus-visible {
+  z-index: 1200;
 }
 
 .metric-hint-bubble {
